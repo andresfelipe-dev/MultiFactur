@@ -49,6 +49,7 @@ public class Empleado extends Usuario {
 
             if (nombre.isEmpty() || precioVenta <= 0){
                 System.out.println("ERROR: El producto de no se puede registrar sin un nombre y un precio de venta mayor a 0.");
+                return;
             }
 
             System.out.print("Ingrese el precio de costo: ");
