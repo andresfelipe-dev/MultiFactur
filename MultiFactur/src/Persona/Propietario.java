@@ -6,4 +6,8 @@ public class Propietario extends Empleado {
     public Propietario(int id, String nombre, String usuario, String contrasena) {
         super(id, nombre, usuario, contrasena);
     }
+
+    public void eliminarProducto(){
+
+    }
 }
