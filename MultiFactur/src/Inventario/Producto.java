@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class Producto {
     private String codigo;
-    private String name;
+    private String nombre;
     private double precioVenta;
     private double precioCosto;
     private int cantidadActual;
@@ -13,10 +13,10 @@ public class Producto {
     private boolean activo;
     private Categoria categoria;
     //Constructor
-    public Producto(String codigo, String name, double precioVenta, double precioCosto, int cantidadActual,
+    public Producto(String codigo, String nombre, double precioVenta, double precioCosto, int cantidadActual,
                     int cantidadMinima, LocalDate fechaVencimiento, boolean activo, Categoria categoria) {
         this.codigo = codigo;
-        this.name = name;
+        this.nombre = nombre;
         this.precioVenta = precioVenta;
         this.precioCosto = precioCosto;
         this.cantidadActual = cantidadActual;
@@ -36,12 +36,12 @@ public class Producto {
         this.codigo = codigo;
     }
 
-    public String getName() {
-        return name;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNombre(String name) {
+        this.nombre = nombre;
     }
 
     public double getPrecioVenta() {
