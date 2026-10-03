@@ -14,10 +14,9 @@ public class Empleado extends Usuario {
     }
 
     //Metodos
-    public void registrarVenta(){
+    public void registrarVenta(Map<String, Producto> inventario) {
 
     }
-
     public void registrarEntrada(){
 
     }
