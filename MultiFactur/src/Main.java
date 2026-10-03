@@ -53,7 +53,8 @@ public class Main {
                     admin.registrarVenta();
                     break;
                 case 4:
-                    admin.eliminarProducto();
+                    admin.eliminarProducto(inventario, read);
+                    break;
                 case 5:
                     System.out.println("Sesión Cerrada Correctamente");
                     break;
