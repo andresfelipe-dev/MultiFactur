@@ -108,6 +108,7 @@ public class Empleado extends Usuario {
         Scanner sc= new Scanner(System.in);
         int option=0;
         do {
+            verAlertas(inventario,categorias);
             System.out.println("***********");
             System.out.println("INVENTARIO");
             System.out.println("***********");
@@ -179,7 +180,14 @@ public class Empleado extends Usuario {
     }
 
     public void verAlertas(Map<String, Producto> inventario, Map<Integer, Categoria> categorias){
-
+        for (Producto producto: inventario.values()){
+            if (producto.getCantidadActual()<= producto.getCantidadMinima()){
+                System.out.println("");
+                System.out.println("ALERTA DE STOCK BAJO");
+                System.out.println("Quedan " + producto.getCantidadActual() + " unidades de " + producto.getNombre());
+                System.out.println("");
+            }
+        }
     }
 
     public void verHistorialVentas(){
