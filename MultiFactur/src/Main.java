@@ -50,7 +50,8 @@ public class Main {
                     admin.consultarInventario(inventario, categorias);
                     break;
                 case 3:
-                    admin.registrarVenta();
+                    //admin.registrarVenta();
+                    empleado.registrarVenta(inventario);
                     break;
                 case 4:
                     admin.eliminarProducto();
