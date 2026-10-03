@@ -26,8 +26,8 @@ public class Main {
         categorias.put(6, new Categoria(6, "Parba"));
 
         //Ejemplos de Productos
-        inventario.put("P001", new Producto("P001", "Leche Colanta 1L", 3800.0, 2900.0, 40, 10, LocalDate.now().plusMonths(2), true, categorias.get(1)));
-        inventario.put("P002", new Producto("P002", "Limpido 1.8L", 12500.0, 9000.0, 15, 5, LocalDate.now().plusMonths(12), true, categorias.get(2)));
+        inventario.put("P001", new Producto("P001 ", "Leche Colanta 1L", 3800.0, 2900.0, 40, 10, LocalDate.now().plusMonths(2), true, categorias.get(1)));
+        inventario.put("P002", new Producto("P002 ", "Limpido 1.8L", 12500.0, 9000.0, 15, 5, LocalDate.now().plusMonths(12), true, categorias.get(2)));
 
         //Usuario temporal admin para realizar todos los procedimientos
         Propietario admin = new Propietario(1, "Gabriel", "admin", "1234");
@@ -42,6 +42,7 @@ public class Main {
             System.out.println("4. Eliminar Productos");
             System.out.println("5. Cerrar sesión");
             desicionMenu = read.nextInt();
+            read.nextLine();
             switch (desicionMenu){
                 case 1:
                     admin.registrarProducto(inventario, categorias);
