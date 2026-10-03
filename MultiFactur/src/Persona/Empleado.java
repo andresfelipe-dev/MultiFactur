@@ -3,6 +3,7 @@ package Persona;
 import Inventario.Categoria;
 import Inventario.Producto;
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -104,13 +105,80 @@ public class Empleado extends Usuario {
 
     public void consultarInventario(Map<String, Producto> inventario, Map<Integer, Categoria> categorias){
 
+        Scanner sc= new Scanner(System.in);
+        int option=0;
+        do {
+            System.out.println("***********");
+            System.out.println("INVENTARIO");
+            System.out.println("***********");
+            System.out.println("1. Nombre.");
+            System.out.println("2. Categoria.");
+            System.out.println("3. Codigo:");
+            System.out.println("4. Listar todo el inventario");
+            System.out.println("5. Salir");
+            System.out.println("***********");
+            System.out.println("Ingrese la opcion por la cual desea buscar en el inventario");
+            option=sc.nextInt();
+            sc.nextLine();
+            switch (option){
+                case 1:
+                    System.out.println("Ingrese el nombre:");
+                    String nombre=sc.nextLine();
+                    for (Producto producto : inventario.values()){
+                        if (producto.getNombre().toLowerCase().contains(nombre.toLowerCase())){
+                            System.out.println("Codigo: " + producto.getCodigo());
+                            System.out.println("Nombre: " + producto.getNombre());
+                            System.out.println("Cantidad disponible: " + producto.getCantidadActual());
+                        }
+                    }
+                    break;
+                case 2:
+                    System.out.println("Ingrese la categoria:");
+                    String categoria=sc.nextLine();
+                    for (Producto producto: inventario.values()){
+                        if (producto.getCategoria().getNombre().toLowerCase().contains(categoria.toLowerCase())){
+                            System.out.println("");
+                            System.out.println("Codigo: " + producto.getCodigo());
+                            System.out.println("Nombre: " + producto.getNombre());
+                            System.out.println("Cantidad disponible: " + producto.getCantidadActual());
+                            System.out.println("");
+                        }
+                    }
+                    break;
+                case 3:
+                    System.out.println("Ingrese el codigo:");
+                    String codigo=sc.nextLine();
+                    Producto producto=inventario.get(codigo);
+                    System.out.println("");
+                    System.out.println("Nombre: " + producto.getNombre());
+                    System.out.println("Cantidad disponible:" + producto.getCantidadActual());
+                    System.out.println("");
+                    break;
+                case 4:
+                    for (Producto product: inventario.values()){
+                        System.out.println("");
+                        System.out.println("Codigo: " +product.getCodigo());
+                        System.out.println("Nombre: " +product.getNombre());
+                        System.out.println("Cantidad disponible: " + product.getCantidadActual());
+                        System.out.println("");
+                    }
+                    break;
+                case 5:
+                    System.out.println("Saliendo...");
+                    break;
+                default:
+                    System.out.println("Saliendo...");
+                    break;
+            }
+        }while (option!=5);
+
     }
 
     public void definirCantidadMinima(){
 
     }
 
-    public void verAlertas(){
+    public void verAlertas(Map<String, Producto> inventario, Map<Integer, Categoria> categorias){
 
     }
 

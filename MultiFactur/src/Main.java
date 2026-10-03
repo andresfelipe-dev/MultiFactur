@@ -28,6 +28,8 @@ public class Main {
         //Ejemplos de Productos
         inventario.put("P001", new Producto("P001", "Leche Colanta 1L", 3800.0, 2900.0, 40, 10, LocalDate.now().plusMonths(2), true, categorias.get(1)));
         inventario.put("P002", new Producto("P002", "Limpido 1.8L", 12500.0, 9000.0, 15, 5, LocalDate.now().plusMonths(12), true, categorias.get(2)));
+        //Mas ejemplos de productos
+        inventario.put("P003", new Producto("P003", "Coca cola 400ml", 4000.0, 3600,2,12,LocalDate.now().plusMonths(2), true,categorias.get(3) ));
 
         //Usuario temporal admin para realizar todos los procedimientos
         Propietario admin = new Propietario(1, "Gabriel", "admin", "1234");
