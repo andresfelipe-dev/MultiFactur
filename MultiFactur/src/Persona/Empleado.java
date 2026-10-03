@@ -103,7 +103,25 @@ public class Empleado extends Usuario {
     }
 
     public void consultarInventario(Map<String, Producto> inventario, Map<Integer, Categoria> categorias){
+        System.out.println("**** Inventario disponible ****");
 
+        boolean hayProductosActivos = false;
+
+        for (Producto producto : inventario.values()){
+            if (producto.isActivo()) {
+                hayProductosActivos = true;
+
+                System.out.println(
+                        "codigo: " + producto.getCodigo()
+                        + "Nombre: " + producto.getNombre()
+                        + "Cantidad: " + producto.getCantidadActual()
+                        + "Precio de venta: " + producto.getPrecioVenta()
+                );
+            }
+        }
+        if (!hayProductosActivos){
+            System.out.println("No hay productos activos en el inventario.");
+        }
     }
 
     public void definirCantidadMinima(){
