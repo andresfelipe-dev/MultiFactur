@@ -26,7 +26,7 @@ public class Propietario extends Empleado {
         }
         System.out.println("Ingresar el codigo del producto: ");
 
-        String codigo = read.nextLine().trim();
+        String codigo = read.nextLine();
 
         if (codigo.isEmpty()){
             System.out.println("Operacion invalida.");
@@ -44,7 +44,16 @@ public class Propietario extends Empleado {
         System.out.println("Producto seleccionado: " + producto.getNombre());
         System.out.println("Esta seguro que desea eliminar el producto? Escriba SI para confirmar: ");
 
-        String confirmacion = read.nextLine().trim();
+        String confirmacion = read.nextLine();
+
+        while (!confirmacion.equalsIgnoreCase("SI")
+                && !confirmacion.equalsIgnoreCase("SÍ")
+                && !confirmacion.equalsIgnoreCase("NO")) {
+
+            System.out.print("Escriba SI para eliminar o NO para cancelar: ");
+            confirmacion = read.nextLine();
+        }
+
         if (!confirmacion.equalsIgnoreCase("SI")
         && !confirmacion.equalsIgnoreCase("SÍ")){
             System.out.println("Operación cancelada. El producto no fue eliminado");
@@ -54,5 +63,6 @@ public class Propietario extends Empleado {
         //Eliminar la entrada correspondiente del inventario
         inventario.remove(codigo);
         System.out.println("Producto - " + producto.getNombre() + " - eliminado correctamente");
+        return;
     }
 }
