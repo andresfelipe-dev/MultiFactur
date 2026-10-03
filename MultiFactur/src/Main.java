@@ -32,15 +32,19 @@ public class Main {
         //Usuario temporal admin para realizar todos los procedimientos
         Propietario admin = new Propietario(1, "Gabriel", "admin", "1234");
         do {
+            System.out.println();
             System.out.println("***** MULTIFACTUR *****");
-            System.out.println("Bienvenido al sistema de gestión de inventario y ventas.");
+            System.out.println();
+            System.out.println("--- Bienvenido al sistema de gestión de inventario y ventas ---");
             System.out.println("¿Que quieres hacer? Ingresa el número de la opción elegida.");
             System.out.println();
+            System.out.println("-------------- MENU ----------------");
             System.out.println("1. Registrar un Producto Nuevo");
             System.out.println("2. Consultar Inventario Disponible.");
             System.out.println("3. Registrar Ventas");
             System.out.println("4. Eliminar Productos");
             System.out.println("5. Cerrar sesión");
+            System.out.println("-------------------------------------");
             desicionMenu = read.nextInt();
             switch (desicionMenu){
                 case 1:
@@ -50,8 +54,7 @@ public class Main {
                     admin.consultarInventario(inventario, categorias);
                     break;
                 case 3:
-                    //admin.registrarVenta();
-                    empleado.registrarVenta(inventario);
+                    admin.registrarVenta(inventario);
                     break;
                 case 4:
                     admin.eliminarProducto();

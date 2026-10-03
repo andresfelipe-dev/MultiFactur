@@ -57,7 +57,9 @@ public class Empleado extends Usuario {
 
                     //esto da todos los valores del producto seleccionado
                     recibo = recibo + producto.getNombre() + " x" + cantidad + " = $" + subtotal + "\n";
-                    System.out.println("Producto agregado.");
+                    System.out.println();
+                    System.out.println("Producto agregado. " + "\nNombre: " + producto.getNombre());
+                    System.out.println();
                 }
             }
         }
