@@ -15,7 +15,62 @@ public class Empleado extends Usuario {
 
     //Metodos
     public void registrarVenta(Map<String, Producto> inventario) {
+        Scanner read = new Scanner(System.in);
+        double total = 0;
+        String recibo = "";
 
+        System.out.println("REGISTRAR VENTA");
+
+        boolean seguir = true;
+        while (seguir) {
+            System.out.print("Codigo del producto (escribe fin para terminar): ");
+            String codigo = read.nextLine();
+
+            //esto termina el ciclo si el usuario coloca fin
+            if (codigo.equals("fin")) {
+                seguir = false;
+
+            } else if (!inventario.containsKey(codigo)) {
+                System.out.println("ERROR: Ese producto no existe.");
+
+            } else {
+                //esto obtiene el codigo del producto si existe
+                Producto producto = inventario.get(codigo);
+
+                System.out.print("Cantidad a vender: ");
+                int cantidad = read.nextInt();
+                read.nextLine();
+
+                if (cantidad <= 0) {
+                    System.out.println("ERROR: La cantidad debe ser mayor a 0.");
+
+                } else if (cantidad > producto.getCantidadActual()) {
+                    System.out.println("ERROR: Solo quedan " + producto.getCantidadActual() + " en stock.");
+
+                } else {
+                    //esto calcula el subtotal segun la cantidad de productos
+                    double subtotal = producto.getPrecioVenta() * cantidad;
+                    total = total + subtotal;
+
+                    // esto le resta la cantidad en el stock al producto
+                    producto.setCantidadActual(producto.getCantidadActual() - cantidad);
+
+                    //esto da todos los valores del producto seleccionado
+                    recibo = recibo + producto.getNombre() + " x" + cantidad + " = $" + subtotal + "\n";
+                    System.out.println("Producto agregado.");
+                }
+            }
+        }
+
+        //esto imprime el recibo con todos los datos
+        if (total == 0) {
+            System.out.println("No se vendio nada.");
+        } else {
+            System.out.println("\n===== RECIBO =====");
+            System.out.println(recibo);
+            System.out.println("TOTAL A COBRAR: $" + total);
+            System.out.println("==================");
+        }
     }
     public void registrarEntrada(){
 
