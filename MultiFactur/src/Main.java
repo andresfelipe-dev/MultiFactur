@@ -48,6 +48,7 @@ public class Main {
             System.out.println("5. Cerrar sesión");
             System.out.println("-------------------------------------");
             desicionMenu = read.nextInt();
+            read.nextLine();
             switch (desicionMenu){
                 case 1:
                     admin.registrarProducto(inventario, categorias);
@@ -59,7 +60,8 @@ public class Main {
                     admin.registrarVenta(inventario);
                     break;
                 case 4:
-                    admin.eliminarProducto();
+                    admin.eliminarProducto(inventario, read);
+                    break;
                 case 5:
                     System.out.println("Sesión Cerrada Correctamente");
                     break;
