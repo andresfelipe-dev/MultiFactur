@@ -103,6 +103,10 @@ public class Empleado extends Usuario {
     }
 
     public void consultarInventario(Map<String, Producto> inventario, Map<Integer, Categoria> categorias){
+
+    }
+
+    public void consultarInventarioActivos(Map<String, Producto> inventario, Map<Integer, Categoria> categorias){
         System.out.println("**** Inventario disponible ****");
 
         boolean hayProductosActivos = false;
@@ -113,9 +117,9 @@ public class Empleado extends Usuario {
 
                 System.out.println(
                         "codigo: " + producto.getCodigo()
-                        + "Nombre: " + producto.getNombre()
-                        + "Cantidad: " + producto.getCantidadActual()
-                        + "Precio de venta: " + producto.getPrecioVenta()
+                                + "Nombre: " + producto.getNombre()
+                                + "Cantidad: " + producto.getCantidadActual()
+                                + "Precio de venta: " + producto.getPrecioVenta()
                 );
             }
         }
