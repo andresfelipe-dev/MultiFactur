@@ -107,8 +107,8 @@ public class Empleado extends Usuario {
 
         Scanner sc= new Scanner(System.in);
         int option=0;
+        verAlertas(inventario, categorias);
         do {
-            verAlertas(inventario,categorias);
             System.out.println("***********");
             System.out.println("INVENTARIO");
             System.out.println("***********");
