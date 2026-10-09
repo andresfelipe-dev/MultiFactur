@@ -26,21 +26,27 @@ public class Main {
         categorias.put(6, new Categoria(6, "Parba"));
 
         //Ejemplos de Productos
-        inventario.put("P001", new Producto("P001 ", "Leche Colanta 1L", 3800.0, 2900.0, 40, 10, LocalDate.now().plusMonths(2), true, categorias.get(1)));
-        inventario.put("P002", new Producto("P002 ", "Limpido 1.8L", 12500.0, 9000.0, 15, 5, LocalDate.now().plusMonths(12), true, categorias.get(2)));
+        inventario.put("P001", new Producto("P001", "Leche Colanta 1L", 3800.0, 2900.0, 40, 10, LocalDate.now().plusMonths(2), true, categorias.get(1)));
+        inventario.put("P002", new Producto("P002", "Limpido 1.8L", 12500.0, 9000.0, 15, 5, LocalDate.now().plusMonths(12), true, categorias.get(2)));
+        //Mas ejemplos de productos
+        inventario.put("P003", new Producto("P003", "Coca cola 400ml", 4000.0, 3600,2,12,LocalDate.now().plusMonths(2), true,categorias.get(3) ));
 
         //Usuario temporal admin para realizar todos los procedimientos
         Propietario admin = new Propietario(1, "Gabriel", "admin", "1234");
         do {
+            System.out.println();
             System.out.println("***** MULTIFACTUR *****");
-            System.out.println("Bienvenido al sistema de gestión de inventario y ventas.");
+            System.out.println();
+            System.out.println("--- Bienvenido al sistema de gestión de inventario y ventas ---");
             System.out.println("¿Que quieres hacer? Ingresa el número de la opción elegida.");
             System.out.println();
+            System.out.println("-------------- MENU ----------------");
             System.out.println("1. Registrar un Producto Nuevo");
             System.out.println("2. Consultar Inventario Disponible.");
             System.out.println("3. Registrar Ventas");
             System.out.println("4. Eliminar Productos");
             System.out.println("5. Cerrar sesión");
+            System.out.println("-------------------------------------");
             desicionMenu = read.nextInt();
             read.nextLine();
             switch (desicionMenu){
@@ -51,7 +57,7 @@ public class Main {
                     admin.consultarInventario(inventario, categorias);
                     break;
                 case 3:
-                    admin.registrarVenta();
+                    admin.registrarVenta(inventario);
                     break;
                 case 4:
                     admin.eliminarProducto(inventario, read);
