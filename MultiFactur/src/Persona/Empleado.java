@@ -31,7 +31,6 @@ public class Empleado extends Usuario {
             RegistroVentas registro,
             Scanner read) {
 
-        // NUEVO: conserva la información de esta venta.
         Venta venta = new Venta(registro.siguienteId());
 
         double total = 0;
@@ -70,7 +69,7 @@ public class Empleado extends Usuario {
                     double subtotal = producto.getPrecioVenta() * cantidad;
                     total = total + subtotal;
 
-                    // NUEVO: guarda el detalle para HU-10 y HU-11.
+                    // guarda el detalle para HU-10 y HU-11.
                     venta.agregarDetalle(new DetalleVenta(producto, cantidad));
 
                     // esto le resta la cantidad en el stock al producto
@@ -90,7 +89,7 @@ public class Empleado extends Usuario {
             System.out.println("No se vendio nada.");
         } else {
 
-            // NUEVO: guarda la venta antes de confirmar el recibo.
+            // guarda la venta antes de confirmar el recibo.
             try {
                 registro.guardar(venta);
 
