@@ -67,6 +67,10 @@ public class Venta {
         );
     }
 
+    public void agregarDetalle(DetalleVenta detalle) {
+        detalles.add(detalle);
+    }
+
     public int getIdVenta() {
         return idVenta;
     }
