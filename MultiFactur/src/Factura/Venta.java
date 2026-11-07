@@ -8,66 +8,63 @@ import java.util.Collections;
 import java.util.List;
 
 public class Venta {
-    private int idVenta;
-    private LocalDate fecha;
-    private double total;
-    private List<DetalleVenta> detalles = new ArrayList<>();
+    private final int idVenta;
+    private final LocalDate fecha;
+    private final List<DetalleVenta> detalles = new ArrayList<>();
 
     public Venta(int idVenta) {
+        this(idVenta, LocalDate.now());
+    }
+
+    public Venta(int idVenta, LocalDate fecha) {
         this.idVenta = idVenta;
-        this.fecha = LocalDate.now();
-        this.total = 0;
+        this.fecha = fecha;
     }
 
-    //esto limita que el valor sea menor a 0
-    public void agregarItem(Producto prod, int cant) {
-        if (cant <= 0) {
-            System.out.println("La cantidad debe ser mayor a 0.");
+    public void agregarItem(Producto producto, int cantidad) {
+        if (cantidad <= 0) {
+            throw new IllegalArgumentException(
+                    "La cantidad debe ser mayor a cero."
+            );
         }
 
-        // Se resta lo que ya se agrego de este mismo producto en esta venta
-        int disponible = prod.getCantidadActual() - cantidadAgregada(prod);
-        if (cant > disponible) {
-            System.out.println("Solo quedan " + disponible + " en stock.");
-        }
+        long cantidadAgregada = 0;
 
-        //agrega a la lista de DetalleVenta
-        detalles.add(new DetalleVenta(prod, cant));
-    }
-
-    // Revision final antes de descontar: ningun producto puede superar su stock
-    public void validarStock() {
-        for (DetalleVenta d : detalles) {
-            Producto p = d.getProducto();
-            if (cantidadAgregada(p) > p.getCantidadActual()) {
-                System.out.println("Stock insuficiente de " + p.getNombre() + ".");
+        for (DetalleVenta detalle : detalles) {
+            if (detalle.getCodigoProducto().equals(producto.getCodigo())) {
+                cantidadAgregada += detalle.getCantidad();
             }
         }
+
+        if (cantidadAgregada + cantidad > producto.getCantidadActual()) {
+            throw new IllegalArgumentException(
+                    "Stock insuficiente de " + producto.getNombre()
+            );
+        }
+
+        detalles.add(new DetalleVenta(producto, cantidad));
     }
 
-    // Antes: total = total + subtotal;
+    // Recupera detalles de ventas guardadas sin descontar inventario.
+    void agregarDetalleGuardado(DetalleVenta detalle) {
+        detalles.add(detalle);
+    }
+
     public double calcularTotal() {
-        total = 0;
-        for (DetalleVenta d : detalles) {
-            total += d.calcularSubtotal();
+        double total = 0;
+
+        for (DetalleVenta detalle : detalles) {
+            total += detalle.calcularSubtotal();
         }
+
         return total;
     }
 
-    // Antes: el bloque de println del recibo (ahora lo imprime Comprobante)
     public Combrobante generarComprobante() {
-        return new Combrobante("C-" + String.format("%04d", idVenta), fecha);
-    }
-
-    // Suma lo ya agregado de un mismo producto (se puede escanear el mismo codigo dos veces)
-    private int cantidadAgregada(Producto prod) {
-        int suma = 0;
-        for (DetalleVenta d : detalles) {
-            if (d.getProducto() == prod) {
-                suma += d.getCantidad();
-            }
-        }
-        return suma;
+        return new Combrobante(
+                String.format("C-%04d", idVenta),
+                fecha
+        );
     }
 
     public int getIdVenta() {
@@ -79,12 +76,10 @@ public class Venta {
     }
 
     public double getTotal() {
-        return total;
+        return calcularTotal();
     }
 
     public List<DetalleVenta> getDetalles() {
-        return detalles;
+        return Collections.unmodifiableList(detalles);
     }
 }
-
-
