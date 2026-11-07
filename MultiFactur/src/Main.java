@@ -37,7 +37,7 @@ public class Main {
         Map<String, Producto> inventario = new HashMap<>();
         Map<Integer, Categoria> categorias = new HashMap<>();
 
-        // Categorías del proyecto original.
+        // Categorías
         categorias.put(0, new Categoria(0, "General"));
         categorias.put(1, new Categoria(1, "Granos"));
         categorias.put(2, new Categoria(2, "Aseo"));
@@ -91,7 +91,7 @@ public class Main {
                 )
         );
 
-        // Usuario temporal del proyecto original.
+        // Usuario temporal
         Propietario admin = new Propietario(
                 1,
                 "Gabriel",
@@ -103,37 +103,40 @@ public class Main {
             System.out.println();
             System.out.println("***** MULTIFACTUR *****");
             System.out.println();
-            System.out.println(
-                    "--- Bienvenido al sistema de gestión de inventario y ventas ---"
-            );
-            System.out.println(
-                    "¿Que quieres hacer? Ingresa el número de la opción elegida."
-            );
+            System.out.println("--- Bienvenido al sistema de gestión de inventario y ventas ---");
+            System.out.println("¿Que quieres hacer? Ingresa el número de la opción elegida.");
             System.out.println();
             System.out.println("-------------- MENU ----------------");
 
-            // Opciones originales.
             System.out.println("1. Registrar un Producto Nuevo");
             System.out.println("2. Consultar Inventario Disponible.");
             System.out.println("3. Registrar Ventas");
             System.out.println("4. Eliminar Productos");
             System.out.println("5. Cerrar sesión");
-
-            // Opciones nuevas de tus historias.
-            System.out.println(
-                    "6. Consultar facturas y exportar comprobantes (HU-10)"
-            );
-            System.out.println(
-                    "7. Consultar historial de ventas por producto (HU-11)"
-            );
-            System.out.println(
-                    "8. Consultar productos más vendidos (HU-11)"
-            );
+            System.out.println("6. Consultar facturas y exportar comprobantes");
+            System.out.println("7. Consultar historial de ventas por producto");
+            System.out.println("8. Consultar productos más vendidos");
 
             System.out.println("-------------------------------------");
 
-            desicionMenu = read.nextInt();
-            read.nextLine();
+            while (true) {
+                System.out.print("Ingrese una opción del 1 al 8: ");
+
+                try {
+                    desicionMenu = Integer.parseInt(read.nextLine().trim());
+
+                    if (desicionMenu >= 1 && desicionMenu <= 8) {
+                        break;
+                    }
+
+                    System.out.println("Opción inválida. Debe estar entre 1 y 8.");
+
+                } catch (NumberFormatException e) {
+                    System.out.println(
+                            "Dato inválido. Ingrese un número."
+                    );
+                }
+            }
 
             switch (desicionMenu) {
                 case 1:
@@ -159,17 +162,14 @@ public class Main {
                     break;
 
                 case 6:
-                    // HU-10.
                     admin.consultarFacturas(registro, read);
                     break;
 
                 case 7:
-                    // HU-11.
                     admin.verHistorialVentas(registro, read);
                     break;
 
                 case 8:
-                    // HU-11.
                     admin.verProductosMasVendidos(registro);
                     break;
 
