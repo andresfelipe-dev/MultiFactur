@@ -56,7 +56,8 @@ public class Main {
             System.out.println("2. Consultar Inventario Disponible.");
             System.out.println("3. Registrar Ventas");
             System.out.println("4. Eliminar Productos");
-            System.out.println("5. Cerrar sesión");
+            System.out.println("5. Registrar entrada de mercancía");
+            System.out.println("6. Cerrar sesión");
             System.out.println("-------------------------------------");
             desicionMenu = read.nextInt();
             read.nextLine();
@@ -74,12 +75,15 @@ public class Main {
                     admin.eliminarProducto(inventario, read);
                     break;
                 case 5:
+                    admin.registrarEntrada(inventario, read);
+                    break;
+                case 6:
                     System.out.println("Sesión Cerrada Correctamente");
                     break;
                 default:
                     System.out.println("Opción Ingresada NO Valida." +
                             "\nIntenta Nuevamente.");
             }
-        } while (desicionMenu != 5);
+        } while (desicionMenu != 6);
     }
 }

@@ -75,8 +75,59 @@ public class Empleado extends Usuario {
             System.out.println("==================");
         }
     }
-    public void registrarEntrada(){
+    public void registrarEntrada(Map<String, Producto> inventario, Scanner read) {
 
+        System.out.println("***** REGISTRAR ENTRADA DE MERCANCÍA *****");
+
+        if (inventario.isEmpty()) {
+            System.out.println("No hay productos registrados.");
+            return;
+        }
+
+        System.out.print("Ingrese el código del producto: ");
+        String codigo = read.nextLine().trim();
+
+        // Buscar el producto existente por su código.
+        Producto producto = inventario.get(codigo);
+
+        if (producto == null) {
+            System.out.println("No existe un producto con ese código.");
+            return;
+        }
+
+        System.out.println("Producto: " + producto.getNombre());
+        System.out.println("Cantidad actual: " + producto.getCantidadActual());
+        System.out.print("Ingrese la cantidad de unidades que llegan: ");
+
+        // Comprobar que se escribió un número entero.
+        if (!read.hasNextInt()) {
+            read.nextLine();
+            System.out.println("Debe ingresar una cantidad válida.");
+            return;
+        }
+
+        int cantidad = read.nextInt();
+        read.nextLine();
+
+        if (cantidad <= 0) {
+            System.out.println("La cantidad debe ser mayor que cero.");
+            return;
+        }
+
+        // Evitar que la suma supere el límite del tipo int.
+        if (producto.getCantidadActual() > Integer.MAX_VALUE - cantidad) {
+            System.out.println("La cantidad ingresada supera el límite permitido.");
+            return;
+        }
+
+        // Sumar las unidades recibidas al stock que ya tenía el producto.
+        int nuevaCantidad = producto.getCantidadActual() + cantidad;
+        producto.setCantidadActual(nuevaCantidad);
+
+        System.out.println("Entrada registrada correctamente.");
+        System.out.println("Producto: " + producto.getNombre());
+        System.out.println("Unidades recibidas: " + cantidad);
+        System.out.println("Cantidad actualizada: " + nuevaCantidad);
     }
 
     public void editarProducto(){
