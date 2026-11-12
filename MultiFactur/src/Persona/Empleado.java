@@ -130,8 +130,107 @@ public class Empleado extends Usuario {
         System.out.println("Cantidad actualizada: " + nuevaCantidad);
     }
 
-    public void editarProducto(){
+    public void editarProducto(Map<String, Producto> inventario,
+                               Map<Integer, Categoria> categorias,
+                               Scanner read) {
 
+        System.out.println("\n***** EDITAR PRODUCTO *****");
+
+        if (inventario.isEmpty()) {
+            System.out.println("No hay productos registrados.");
+            return;
+        }
+
+        System.out.print("Ingrese el código del producto: ");
+        String codigo = read.nextLine().trim();
+
+        Producto producto = inventario.get(codigo);
+
+        if (producto == null) {
+            System.out.println("No existe un producto con ese código.");
+            return;
+        }
+
+        System.out.println("Producto seleccionado: " + producto.getNombre());
+        System.out.println("Ingrese todos los datos que tendrá el producto.");
+
+        // Primero recogemos los datos sin modificar todavía el producto.
+        System.out.print("Nuevo nombre: ");
+        String nombre = read.nextLine().trim();
+
+        if (nombre.isEmpty()) {
+            System.out.println("El nombre no puede quedar vacío.");
+            return;
+        }
+
+        try {
+            System.out.print("Nuevo precio de venta (use punto para decimales): ");
+            double precioVenta = Double.parseDouble(read.nextLine().trim());
+
+            if (!Double.isFinite(precioVenta) || precioVenta <= 0) {
+                System.out.println("El precio debe ser un número mayor que cero.");
+                return;
+            }
+
+            System.out.println("Categorías disponibles:");
+
+            for (Categoria categoria : categorias.values()) {
+                System.out.println(
+                        categoria.getIdCategoria() + ". " + categoria.getNombre()
+                );
+            }
+
+            System.out.print("Ingrese el ID de la nueva categoría: ");
+            int idCategoria = Integer.parseInt(read.nextLine().trim());
+
+            Categoria categoria = categorias.get(idCategoria);
+
+            if (categoria == null) {
+                System.out.println("La categoría seleccionada no existe.");
+                return;
+            }
+
+            System.out.print("Nueva fecha de vencimiento (AAAA-MM-DD): ");
+            LocalDate fechaVencimiento =
+                    LocalDate.parse(read.nextLine().trim());
+
+            System.out.print("Nueva cantidad actual: ");
+            int cantidadActual = Integer.parseInt(read.nextLine().trim());
+
+            System.out.print("Nueva cantidad mínima: ");
+            int cantidadMinima = Integer.parseInt(read.nextLine().trim());
+
+            if (cantidadActual < 0 || cantidadMinima < 0) {
+                System.out.println("Las cantidades no pueden ser negativas.");
+                return;
+            }
+
+            // Guardamos únicamente después de validar todos los datos.
+            producto.setNombre(nombre);
+            producto.setPrecioVenta(precioVenta);
+            producto.setCategoria(categoria);
+            producto.setFechaVencimiento(fechaVencimiento);
+            producto.setCantidadActual(cantidadActual);
+            producto.setCantidadMinima(cantidadMinima);
+
+            System.out.println("Producto actualizado correctamente.");
+            System.out.println("Código: " + producto.getCodigo());
+            System.out.println("Nombre: " + producto.getNombre());
+            System.out.println("Precio de venta: " + producto.getPrecioVenta());
+            System.out.println("Categoría: " + producto.getCategoria().getNombre());
+            System.out.println("Vencimiento: " + producto.getFechaVencimiento());
+            System.out.println("Cantidad actual: " + producto.getCantidadActual());
+            System.out.println("Cantidad mínima: " + producto.getCantidadMinima());
+
+        } catch (NumberFormatException e) {
+            System.out.println(
+                    "Número inválido o vacío. No se guardaron los cambios."
+            );
+        } catch (java.time.format.DateTimeParseException e) {
+            System.out.println(
+                    "Fecha inválida. Use AAAA-MM-DD. No se guardaron los cambios."
+            );
+        }
     }
 
     public void registrarProducto(Map<String, Producto> inventario, Map<Integer, Categoria> categorias){
