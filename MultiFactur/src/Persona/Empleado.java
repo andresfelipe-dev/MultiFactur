@@ -10,8 +10,8 @@ import java.util.Scanner;
 public class Empleado extends Usuario {
 
     // Constructor
-    public Empleado(int id, String nombre, String usuario, String contrasena) {
-        super(id, nombre, usuario, contrasena);
+    public Empleado(String nombre, String usuario, String contrasena) {
+        super(nombre, usuario, contrasena);
     }
 
     //Metodos

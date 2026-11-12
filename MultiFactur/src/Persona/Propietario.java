@@ -6,8 +6,8 @@ import java.util.Scanner;
 public class Propietario extends Empleado {
 
     // Constructor
-    public Propietario(int id, String nombre, String usuario, String contrasena) {
-        super(id, nombre, usuario, contrasena);
+    public Propietario(String nombre, String usuario, String contrasena) {
+        super(nombre, usuario, contrasena);
     }
 
     public void eliminarProducto(
