@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class Main {
     static void main(String[] args) {
         Scanner read = new Scanner(System.in);
-        int desicionMenu = 0;
+        String desicionMenu;
         Map<String, Producto> inventario = new HashMap<>();
         Map<Integer, Categoria> categorias = new HashMap<>();
         Map<String, Usuario> usuarios = new HashMap<>();
@@ -70,42 +70,50 @@ public class Main {
                 System.out.println("5. Editar producto");
                 if (usuarioActivo instanceof Propietario) {
                     System.out.println("6. Eliminar Productos");
+                    System.out.println("7. Administrar Empleados");
                 }
                 System.out.println("0. Cerrar sesión");
                 System.out.println("-------------------------------------");
-                desicionMenu = read.nextInt();
+                desicionMenu = read.next();
                 read.nextLine();
                 switch (desicionMenu){
-                    case 1:
+                    case "1":
                         usuarioActivo.registrarProducto(inventario, categorias);
                         break;
-                    case 2:
+                    case "2":
                         usuarioActivo.consultarInventario(inventario, categorias);
                         break;
-                    case 3:
+                    case "3":
                         usuarioActivo.registrarVenta(inventario);
                         break;
-                    case 4:
+                    case "4":
                         usuarioActivo.registrarEntrada(inventario, read);
                         break;
-                    case 5:
+                    case "5":
                         usuarioActivo.editarProducto(inventario, categorias, read);
                         break;
-                    case 6:
+                    case "6":
                         if (usuarioActivo instanceof Propietario propietario) {
                             propietario.eliminarProducto(inventario, read);
                         } else {
                             System.out.println("No tienes permiso para realizar esta acción (Eliminar Producto).");
                         }
                         break;
-                    case 0:
+                    case "7":
+                        if (usuarioActivo instanceof Propietario propietario) {
+                            propietario.administrarEmpleados(usuarios, read);
+                        } else {
+                            System.out.println("No tienes permiso para realizar esta acción (Administrar Empleados).");
+                        }
+                        break;
+                    case "0":
                         System.out.println("Sesión Cerrada Correctamente");
                         break;
                     default:
                         System.out.println("Opción Ingresada NO Valida." +
                                 "\nIntenta Nuevamente.");
                 }
-            } while (desicionMenu != 0);
+            } while (!desicionMenu.equals("0"));
         }
     }
 
@@ -126,7 +134,7 @@ public class Main {
 
             Usuario encontrado = usuarios.get(nombreUsuario);
             if (encontrado != null && encontrado.getContrasena().equals(contrasena)) {
-                System.out.println("Bienvenido, " + encontrado.getNombre());
+                System.out.println("Bienvenid@, " + encontrado.getNombre());
                 return encontrado;
             }
             System.out.println("Usuario o contraseña inconrrectos.\nIntente nuevamente.");

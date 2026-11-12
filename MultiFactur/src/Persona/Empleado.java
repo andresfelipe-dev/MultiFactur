@@ -320,9 +320,9 @@ public class Empleado extends Usuario {
             System.out.println("***********");
             System.out.println("1. Nombre.");
             System.out.println("2. Categoria.");
-            System.out.println("3. Codigo:");
-            System.out.println("4. Listar todo el inventario");
-            System.out.println("5. Salir");
+            System.out.println("3. Codigo.");
+            System.out.println("4. Listar todo el inventario.");
+            System.out.println("5. Salir.");
             System.out.println("***********");
             System.out.println("Ingrese la opcion por la cual desea buscar en el inventario");
             option=sc.nextInt();

@@ -22,7 +22,7 @@ public class Propietario extends Empleado {
 
         //Mostrar los productos disponibles para eliminar
         for (Producto producto : inventario.values()){
-            System.out.println("codigo: " + producto.getCodigo() + "Nombre: " + producto.getNombre());
+            System.out.println("Código: " + producto.getCodigo() + " Nombre: " + producto.getNombre());
         }
         System.out.println("Ingresar el codigo del producto: ");
 
@@ -64,5 +64,56 @@ public class Propietario extends Empleado {
         inventario.remove(codigo);
         System.out.println("Producto - " + producto.getNombre() + " - eliminado correctamente");
         return;
+    }
+
+    public void administrarEmpleados(Map<String,Usuario> usuarios, Scanner read) {
+        String opcion;
+        do {
+            System.out.println();
+            System.out.println("**** ADMINISTRAR EMPLEADOS ****");
+            System.out.println("1. Crear empleado.");
+            System.out.println("0. Volver al menú principal.");
+            opcion = read.nextLine().trim();
+            switch (opcion) {
+                case "1":
+                    crearEmpleado(usuarios, read);
+                    break;
+                case "0":
+                    break;
+            }
+        } while (!opcion.equals("0"));
+    }
+
+    private void crearEmpleado(Map<String, Usuario> usuarios, Scanner read){
+        System.out.println("**** CREAR EMPLEADO ****");
+        System.out.println("Nombre completo: ");
+        String nombre = read.nextLine().trim();
+        System.out.println("Usuario: ");
+        String nombreUsuario = read.nextLine().trim();
+        System.out.println("Contraseña: ");
+        String contrasena = read.nextLine();
+
+        if (nombre.isBlank() || nombreUsuario.isBlank() || contrasena.isBlank()) {
+            System.out.println("Todos los campos son obligatorios.");
+            System.out.println("El empleado no fue creado.");
+            return;
+        }
+
+        if (nombreUsuario.equals("salir")) {
+            System.out.println("Ese nombre de usuario no está permitido.");
+            System.out.println("El empleado no fue creado.");
+            return;
+        }
+
+        if (usuarios.containsKey(nombreUsuario)) {
+            System.out.println("Ya existe un usuario con ese nombre.");
+            System.out.println("El empleado no fue creado.");
+            return;
+        }
+
+        usuarios.put(nombreUsuario, new Empleado(nombre, nombreUsuario, contrasena));
+        System.out.println("Empleado: " + nombre +
+                "\nUsuario: " + nombreUsuario +
+                "\nCreado correctamente.");
     }
 }
