@@ -1,6 +1,7 @@
 import Inventario.Categoria;
 import Inventario.Producto;
 import Persona.Empleado;
+import Persona.Usuario;
 import Persona.Propietario;
 
 import java.time.LocalDate;
@@ -11,10 +12,111 @@ import java.util.Scanner;
 public class Main {
     static void main(String[] args) {
         Scanner read = new Scanner(System.in);
-        int desicionMenu = 0;
+        String desicionMenu;
         Map<String, Producto> inventario = new HashMap<>();
         Map<Integer, Categoria> categorias = new HashMap<>();
+        Map<String, Usuario> usuarios = new HashMap<>();
 
+        cargarDatos(categorias, inventario, usuarios);
+
+        boolean programaActivo = true;
+        while (programaActivo) {
+            Usuario sesion = iniciarSesion(usuarios, read);
+            if (sesion == null) {
+                System.out.println("Programa finalizado");
+                programaActivo = false;
+                continue;
+            }
+            Empleado usuarioActivo = (Empleado) sesion;
+
+            do {
+                System.out.println();
+                System.out.println("***** MULTIFACTUR *****");
+                System.out.println();
+                System.out.println("--- Bienvenido al sistema de gestión de inventario y ventas ---");
+                System.out.println("¿Que quieres hacer? Ingresa el número de la opción elegida.");
+                System.out.println();
+                System.out.println("-------------- MENU ----------------");
+                System.out.println("1. Registrar un Producto Nuevo");
+                System.out.println("2. Consultar Inventario Disponible.");
+                System.out.println("3. Registrar Ventas");
+                System.out.println("4. Registrar entrada de mercancía");
+                System.out.println("5. Editar producto");
+                if (usuarioActivo instanceof Propietario) {
+                    System.out.println("6. Eliminar Productos");
+                    System.out.println("7. Administrar Empleados");
+                }
+                System.out.println("0. Cerrar sesión");
+                System.out.println("-------------------------------------");
+                desicionMenu = read.next();
+                read.nextLine();
+                switch (desicionMenu){
+                    case "1":
+                        usuarioActivo.registrarProducto(inventario, categorias);
+                        break;
+                    case "2":
+                        usuarioActivo.consultarInventario(inventario, categorias);
+                        break;
+                    case "3":
+                        usuarioActivo.registrarVenta(inventario);
+                        break;
+                    case "4":
+                        usuarioActivo.registrarEntrada(inventario, read);
+                        break;
+                    case "5":
+                        usuarioActivo.editarProducto(inventario, categorias, read);
+                        break;
+                    case "6":
+                        if (usuarioActivo instanceof Propietario propietario) {
+                            propietario.eliminarProducto(inventario, read);
+                        } else {
+                            System.out.println("No tienes permiso para realizar esta acción (Eliminar Producto).");
+                        }
+                        break;
+                    case "7":
+                        if (usuarioActivo instanceof Propietario propietario) {
+                            propietario.administrarEmpleados(usuarios, read);
+                        } else {
+                            System.out.println("No tienes permiso para realizar esta acción (Administrar Empleados).");
+                        }
+                        break;
+                    case "0":
+                        System.out.println("Sesión Cerrada Correctamente");
+                        break;
+                    default:
+                        System.out.println("Opción Ingresada NO Valida." +
+                                "\nIntenta Nuevamente.");
+                }
+            } while (!desicionMenu.equals("0"));
+        }
+    }
+
+    //Pide usuario y contrasena hasta que sean correctos y devuelve el usuario que inicio sesion
+    static Usuario iniciarSesion(Map<String, Usuario> usuarios, Scanner read) {
+        System.out.println();
+        System.out.println("***** MULTIFACTUR *****");
+        System.out.println("--------- INICIAR SESION ---------");
+        System.out.println("\nSi desea cerrar el programa, ingrese 'salir' en el campo de Usuario.");
+        while (true) {
+            System.out.println("Usuario: ");
+            String nombreUsuario = read.nextLine().trim().toLowerCase();
+            if (nombreUsuario.equals("salir")) {
+                return null;
+            }
+            System.out.println("Contraseña: ");
+            String contrasena = read.nextLine();
+
+            Usuario encontrado = usuarios.get(nombreUsuario);
+            if (encontrado != null && encontrado.getContrasena().equals(contrasena)) {
+                System.out.println("Bienvenid@, " + encontrado.getNombre());
+                return encontrado;
+            }
+            System.out.println("Usuario o contraseña inconrrectos.\nIntente nuevamente.");
+        }
+    }
+
+    static void cargarDatos(Map<Integer, Categoria> categorias, Map<String, Producto> inventario,
+                            Map<String, Usuario> usuarios) {
         //Lo que hago aquí es crear el objeto y añadirlo en el HashMap en una sola linea.
         //Añado un elemento en el HashMap y dentro de él creo el objeto.
         categorias.put(0, new Categoria(0, "General"));
@@ -24,9 +126,10 @@ public class Main {
         categorias.put(4, new Categoria(4, "Mecato"));
         categorias.put(5, new Categoria(5, "Cuidos"));
         categorias.put(6, new Categoria(6, "Parba"));
+        categorias.put(7, new Categoria(6, "Lacteos"));
 
         //Ejemplos de Productos
-        inventario.put("P001", new Producto("P001", "Leche Colanta 1L", 3800.0, 2900.0, 40, 10, LocalDate.now().plusMonths(2), true, categorias.get(1)));
+        inventario.put("P001", new Producto("P001", "Leche Colanta 1L", 3800.0, 2900.0, 40, 10, LocalDate.now().plusMonths(2), true, categorias.get(7)));
         inventario.put("P002", new Producto("P002", "Limpido Clorox 1.8L", 12500.0, 9000.0, 15, 5, LocalDate.now().plusMonths(12), true, categorias.get(2)));
         inventario.put("P003", new Producto("P003", "Coca Cola No Retornable 400ml", 4000.0, 3000.0, 30, 8, LocalDate.now().plusMonths(6), true, categorias.get(3)));
         inventario.put("P004", new Producto("P004", "Arroz Diana 1kg", 4500.0, 3500.0, 50, 10, LocalDate.now().plusMonths(12), true, categorias.get(1)));
@@ -42,52 +145,6 @@ public class Main {
         inventario.put("P014", new Producto("P014", "Almojábanas Paquete x 5", 6000.0, 4200.0, 12, 3, LocalDate.now().plusDays(7), true, categorias.get(6)));
         inventario.put("P015", new Producto("P015", "Pilas AA Duracell x2", 8500.0, 6000.0, 25, 5, LocalDate.now().plusYears(3), true, categorias.get(0)));
 
-        //Usuario temporal admin para realizar todos los procedimientos
-        Propietario admin = new Propietario(1, "Gabriel", "admin", "1234");
-        do {
-            System.out.println();
-            System.out.println("***** MULTIFACTUR *****");
-            System.out.println();
-            System.out.println("--- Bienvenido al sistema de gestión de inventario y ventas ---");
-            System.out.println("¿Que quieres hacer? Ingresa el número de la opción elegida.");
-            System.out.println();
-            System.out.println("-------------- MENU ----------------");
-            System.out.println("1. Registrar un Producto Nuevo");
-            System.out.println("2. Consultar Inventario Disponible.");
-            System.out.println("3. Registrar Ventas");
-            System.out.println("4. Eliminar Productos");
-            System.out.println("5. Registrar entrada de mercancía");
-            System.out.println("6. Editar producto");
-            System.out.println("7. Cerrar sesión");
-            System.out.println("-------------------------------------");
-            desicionMenu = read.nextInt();
-            read.nextLine();
-            switch (desicionMenu){
-                case 1:
-                    admin.registrarProducto(inventario, categorias);
-                    break;
-                case 2:
-                    admin.consultarInventario(inventario, categorias);
-                    break;
-                case 3:
-                    admin.registrarVenta(inventario);
-                    break;
-                case 4:
-                    admin.eliminarProducto(inventario, read);
-                    break;
-                case 5:
-                    admin.registrarEntrada(inventario, read);
-                    break;
-                case 6:
-                    admin.editarProducto(inventario, categorias, read);
-                    break;
-                case 7:
-                    System.out.println("Sesión Cerrada Correctamente");
-                    break;
-                default:
-                    System.out.println("Opción Ingresada NO Valida." +
-                            "\nIntenta Nuevamente.");
-            }
-        } while (desicionMenu != 7);
+        usuarios.put("admin", new Propietario("Gabriel", "admin", "1234"));
     }
 }
