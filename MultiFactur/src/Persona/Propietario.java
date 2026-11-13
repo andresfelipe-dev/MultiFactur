@@ -72,12 +72,15 @@ public class Propietario extends Empleado {
             System.out.println();
             System.out.println("**** ADMINISTRAR EMPLEADOS ****");
             System.out.println("1. Crear empleado.");
+            System.out.println("2. Eliminar empleado.");
             System.out.println("0. Volver al menú principal.");
             opcion = read.nextLine().trim();
             switch (opcion) {
                 case "1":
                     crearEmpleado(usuarios, read);
                     break;
+                case "2":
+                    eliminarEmpleado(usuarios, read);
                 case "0":
                     break;
             }
@@ -115,5 +118,37 @@ public class Propietario extends Empleado {
         System.out.println("Empleado: " + nombre +
                 "\nUsuario: " + nombreUsuario +
                 "\nCreado correctamente.");
+    }
+
+    private void eliminarEmpleado(Map<String, Usuario> usuarios, Scanner read) {
+        System.out.println("**** ELIMINAR EMPLEADO ****");
+        System.out.print("Usuario del empleado: ");
+        String nombreUsuario = read.nextLine().trim().toLowerCase();
+
+        Usuario encontrado = usuarios.get(nombreUsuario);
+        if (encontrado == null) {
+            System.out.println("No existe ningun usuario con ese nombre.");
+            return;
+        }
+
+        if (encontrado instanceof Propietario) {
+            System.out.println("No se puede eliminar un usuario administrador.");
+            return;
+        }
+
+        System.out.println("Empleado encontrado: " + encontrado.getNombre() +
+                "\nNombre de usuario: " + encontrado.getUsuario());
+        String respuesta;
+        do {
+            System.out.println("Escribe SI para eliminar o NO para cancelar.");
+            respuesta = read.nextLine().trim().toUpperCase();
+        } while (!respuesta.equals("SI") && !respuesta.equals("NO"));
+
+        if (respuesta.equals("SI")) {
+            usuarios.remove(nombreUsuario);
+            System.out.println("Empleado eliminado correctamente.");
+        } else {
+            System.out.println("Eliminación cancelada.");
+        }
     }
 }

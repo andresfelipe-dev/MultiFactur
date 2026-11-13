@@ -3,7 +3,6 @@ package Persona;
 import Inventario.Categoria;
 import Inventario.Producto;
 import java.time.LocalDate;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -238,8 +237,8 @@ public class Empleado extends Usuario {
 
         System.out.println("REGISTRAR PRODUCTO");
 
-        int desicion=0;
-        while (desicion != 2){
+        String desicion = "";
+        while (!desicion.equals("2")){
             System.out.print("Ingrese el código del producto: ");
             String codigo = read.nextLine();
 
@@ -270,6 +269,11 @@ public class Empleado extends Usuario {
 
             //Asignacion de categoría
             System.out.print("Ingrese el ID de la categoría del producto:");
+            for (Categoria categoria : categorias.values()) {
+                System.out.println(
+                        categoria.getIdCategoria() + ". " + categoria.getNombre()
+                );
+            }
             int idCategoria = read.nextInt();
 
             //Creo una variable "catObjetnida" de tipo de dato "Categoria" y con el "=" extraigo un valor
@@ -300,10 +304,10 @@ public class Empleado extends Usuario {
             System.out.println();
             System.out.println("Quieres Ingresar un nuevo producto?");
             System.out.println("Ingresa 1 = Si. 2 = NO");
-            desicion = read.nextInt();
             read.nextLine();
-            if (desicion !=1 && desicion !=2){
-                desicion = 2;
+            desicion = read.nextLine();
+            if (!desicion.equals("1") && !desicion.equals("2")){
+                desicion = "2";
                 System.out.println("Salió Correctamente del Menú de Registro");
             }
         }
