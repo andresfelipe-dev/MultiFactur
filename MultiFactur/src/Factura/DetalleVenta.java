@@ -2,24 +2,50 @@ package Factura;
 
 import Inventario.Producto;
 
+// Guarda los datos originales, aunque después cambie el producto.
 public class DetalleVenta {
-    private Producto producto;
-    private int cantidad;
-    private double precioUnitario;
+    private final String codigoProducto;
+    private final String nombreProducto;
+    private final int cantidad;
+    private final double precioUnitario;
 
     public DetalleVenta(Producto producto, int cantidad) {
-        this.producto = producto;
+        this(
+                producto.getCodigo(),
+                producto.getNombre(),
+                cantidad,
+                producto.getPrecioVenta()
+        );
+    }
+
+    public DetalleVenta(
+            String codigo,
+            String nombre,
+            int cantidad,
+            double precio) {
+
+        if (cantidad <= 0 || !Double.isFinite(precio) || precio <= 0) {
+            throw new IllegalArgumentException(
+                    "Cantidad y precio deben ser positivos."
+            );
+        }
+
+        this.codigoProducto = codigo;
+        this.nombreProducto = nombre;
         this.cantidad = cantidad;
-        // Se congela el precio del momento: si el precio cambia manana, esta venta no se altera
-        this.precioUnitario = producto.getPrecioVenta();
+        this.precioUnitario = precio;
     }
 
     public double calcularSubtotal() {
         return precioUnitario * cantidad;
     }
 
-    public Producto getProducto() {
-        return producto;
+    public String getCodigoProducto() {
+        return codigoProducto;
+    }
+
+    public String getNombreProducto() {
+        return nombreProducto;
     }
 
     public int getCantidad() {

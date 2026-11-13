@@ -3,8 +3,19 @@ package Persona;
 import Inventario.Categoria;
 import Inventario.Producto;
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
+
+import Factura.Combrobante;
+import Factura.DetalleVenta;
+import Factura.RegistroVentas;
+import Factura.Venta;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.time.format.DateTimeParseException;
+import java.util.List;
 
 public class Empleado extends Usuario {
 
@@ -13,9 +24,15 @@ public class Empleado extends Usuario {
         super(nombre, usuario, contrasena);
     }
 
-    //Metodos
-    public void registrarVenta(Map<String, Producto> inventario) {
-        Scanner read = new Scanner(System.in);
+    // Métodos
+    // Se agregan registro y read para conectar las ventas con HU-10 y HU-11.
+    public void registrarVenta(
+            Map<String, Producto> inventario,
+            RegistroVentas registro,
+            Scanner read) {
+
+        Venta venta = new Venta(registro.siguienteId());
+
         double total = 0;
         String recibo = "";
 
@@ -52,6 +69,9 @@ public class Empleado extends Usuario {
                     double subtotal = producto.getPrecioVenta() * cantidad;
                     total = total + subtotal;
 
+                    // guarda el detalle para HU-10 y HU-11.
+                    venta.agregarDetalle(new DetalleVenta(producto, cantidad));
+
                     // esto le resta la cantidad en el stock al producto
                     producto.setCantidadActual(producto.getCantidadActual() - cantidad);
 
@@ -68,10 +88,51 @@ public class Empleado extends Usuario {
         if (total == 0) {
             System.out.println("No se vendio nada.");
         } else {
+
+            // guarda la venta antes de confirmar el recibo.
+            try {
+                registro.guardar(venta);
+
+            } catch (IOException e) {
+                // Si falla el guardado, devuelve el stock descontado.
+                for (DetalleVenta detalle : venta.getDetalles()) {
+                    Producto producto = inventario.get(
+                            detalle.getCodigoProducto()
+                    );
+
+                    producto.setCantidadActual(
+                            producto.getCantidadActual() + detalle.getCantidad()
+                    );
+                }
+
+                System.out.println(
+                        "No se pudo guardar la venta. Se devolvió el stock: "
+                                + e.getMessage()
+                );
+                return;
+            }
+
             System.out.println("\n===== RECIBO =====");
             System.out.println(recibo);
             System.out.println("TOTAL A COBRAR: $" + total);
             System.out.println("==================");
+
+            // HU-10: exporta el comprobante completo como TXT.
+            try {
+                System.out.println(
+                        "Comprobante exportado: "
+                                + venta.generarComprobante().exportar(
+                                venta,
+                                Paths.get("datos", "comprobantes")
+                        )
+                );
+
+            } catch (IOException e) {
+                System.out.println(
+                        "La venta está guardada, pero no se pudo exportar el TXT. "
+                                + "Reintente desde Consultar facturas."
+                );
+            }
         }
     }
     public void registrarEntrada(Map<String, Producto> inventario, Scanner read) {
@@ -104,7 +165,6 @@ public class Empleado extends Usuario {
             System.out.println("Debe ingresar una cantidad válida.");
             return;
         }
-
         int cantidad = read.nextInt();
         read.nextLine();
 
@@ -113,13 +173,11 @@ public class Empleado extends Usuario {
             return;
         }
 
-        // Evitar que la suma supere el límite del tipo int.
         if (producto.getCantidadActual() > Integer.MAX_VALUE - cantidad) {
             System.out.println("La cantidad ingresada supera el límite permitido.");
             return;
         }
 
-        // Sumar las unidades recibidas al stock que ya tenía el producto.
         int nuevaCantidad = producto.getCantidadActual() + cantidad;
         producto.setCantidadActual(nuevaCantidad);
 
@@ -127,6 +185,82 @@ public class Empleado extends Usuario {
         System.out.println("Producto: " + producto.getNombre());
         System.out.println("Unidades recibidas: " + cantidad);
         System.out.println("Cantidad actualizada: " + nuevaCantidad);
+    }
+
+    // HU-10: listar facturas, buscar por fecha y exportar comprobantes.
+    public void consultarFacturas(RegistroVentas registro, Scanner read) {
+        System.out.println("1. Listar todas las facturas");
+        System.out.println("2. Buscar por fecha");
+        System.out.println("3. Ver y exportar una factura por número de venta");
+        System.out.print("Seleccione una opción: ");
+
+        String opcion = read.nextLine().trim();
+
+        if (opcion.equals("1")) {
+            mostrarFacturas(registro.listar());
+
+        } else if (opcion.equals("2")) {
+            System.out.print("Fecha (AAAA-MM-DD): ");
+
+            try {
+                LocalDate fecha = LocalDate.parse(read.nextLine().trim());
+                mostrarFacturas(registro.buscarPorFecha(fecha));
+
+            } catch (DateTimeParseException e) {
+                System.out.println("Fecha inválida. Use AAAA-MM-DD.");
+            }
+
+        } else if (opcion.equals("3")) {
+            System.out.print("Número de venta (ejemplo: 1 para C-0001): ");
+
+            try {
+                int numero = Integer.parseInt(read.nextLine().trim());
+                Venta venta = registro.buscarPorId(numero);
+
+                if (venta == null) {
+                    System.out.println("Factura no encontrada.");
+                    return;
+                }
+
+                Combrobante comprobante = venta.generarComprobante();
+                comprobante.imprimir(venta);
+
+                System.out.println(
+                        "Archivo exportado: "
+                                + comprobante.exportar(
+                                venta,
+                                Paths.get("datos", "comprobantes")
+                        )
+                );
+
+            } catch (NumberFormatException e) {
+                System.out.println("Ingrese un número entero.");
+
+            } catch (IOException e) {
+                System.out.println("No se pudo exportar: " + e.getMessage());
+            }
+
+        } else {
+            System.out.println("Opción inválida.");
+        }
+    }
+
+    // HU-10: muestra las facturas obtenidas en una consulta.
+    private void mostrarFacturas(List<Venta> ventas) {
+        if (ventas.isEmpty()) {
+            System.out.println("No hay facturas para esta consulta.");
+            return;
+        }
+
+        for (Venta venta : ventas) {
+            System.out.printf(
+                    Locale.ROOT,
+                    "%s | Fecha: %s | Total: $%.2f%n",
+                    venta.generarComprobante().getNumero(),
+                    venta.getFecha(),
+                    venta.getTotal()
+            );
+        }
     }
 
     public void editarProducto(Map<String, Producto> inventario,
@@ -385,6 +519,28 @@ public class Empleado extends Usuario {
 
     }
 
+    public void consultarInventarioActivos(Map<String, Producto> inventario, Map<Integer, Categoria> categorias){
+        System.out.println("**** Inventario disponible ****");
+
+        boolean hayProductosActivos = false;
+
+        for (Producto producto : inventario.values()){
+            if (producto.isActivo()) {
+                hayProductosActivos = true;
+
+                System.out.println(
+                        "codigo: " + producto.getCodigo()
+                                + "Nombre: " + producto.getNombre()
+                                + "Cantidad: " + producto.getCantidadActual()
+                                + "Precio de venta: " + producto.getPrecioVenta()
+                );
+            }
+        }
+        if (!hayProductosActivos){
+            System.out.println("No hay productos activos en el inventario.");
+        }
+    }
+
     public void definirCantidadMinima(){
 
     }
@@ -400,7 +556,44 @@ public class Empleado extends Usuario {
         }
     }
 
-    public void verHistorialVentas(){
+    // HU-11: consultar las ventas históricas de un producto.
+    public void verHistorialVentas(RegistroVentas registro, Scanner read) {
+        System.out.print("Código del producto a consultar: ");
+        String codigo = read.nextLine().trim();
 
+        List<String> historial = registro.historialProducto(codigo);
+
+        if (historial.isEmpty()) {
+            System.out.println("No hay ventas registradas de ese producto.");
+            return;
+        }
+
+        System.out.println("Fecha | Venta | Cantidad vendida");
+
+        for (String fila : historial) {
+            System.out.println(fila);
+        }
+    }
+
+    // HU-11: identificar los productos más vendidos por unidades.
+    public void verProductosMasVendidos(RegistroVentas registro) {
+        Map<String, Long> ranking = registro.productosMasVendidos();
+
+        if (ranking.isEmpty()) {
+            System.out.println("No hay ventas registradas.");
+            return;
+        }
+
+        System.out.println("PRODUCTOS MÁS VENDIDOS");
+        int puesto = 1;
+
+        for (Map.Entry<String, Long> producto : ranking.entrySet()) {
+            System.out.println(
+                    puesto++ + ". "
+                            + producto.getKey() + " | "
+                            + registro.nombreProducto(producto.getKey())
+                            + " | Unidades vendidas: " + producto.getValue()
+            );
+        }
     }
 }
