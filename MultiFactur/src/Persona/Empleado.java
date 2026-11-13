@@ -20,8 +20,8 @@ import java.util.List;
 public class Empleado extends Usuario {
 
     // Constructor
-    public Empleado(int id, String nombre, String usuario, String contrasena) {
-        super(id, nombre, usuario, contrasena);
+    public Empleado(String nombre, String usuario, String contrasena) {
+        super(nombre, usuario, contrasena);
     }
 
     // Métodos
@@ -135,6 +135,57 @@ public class Empleado extends Usuario {
             }
         }
     }
+    public void registrarEntrada(Map<String, Producto> inventario, Scanner read) {
+
+        System.out.println("***** REGISTRAR ENTRADA DE MERCANCÍA *****");
+
+        if (inventario.isEmpty()) {
+            System.out.println("No hay productos registrados.");
+            return;
+        }
+
+        System.out.print("Ingrese el código del producto: ");
+        String codigo = read.nextLine().trim();
+
+        // Buscar el producto existente por su código.
+        Producto producto = inventario.get(codigo);
+
+        if (producto == null) {
+            System.out.println("No existe un producto con ese código.");
+            return;
+        }
+
+        System.out.println("Producto: " + producto.getNombre());
+        System.out.println("Cantidad actual: " + producto.getCantidadActual());
+        System.out.print("Ingrese la cantidad de unidades que llegan: ");
+
+        // Comprobar que se escribió un número entero.
+        if (!read.hasNextInt()) {
+            read.nextLine();
+            System.out.println("Debe ingresar una cantidad válida.");
+            return;
+        }
+        int cantidad = read.nextInt();
+        read.nextLine();
+
+        if (cantidad <= 0) {
+            System.out.println("La cantidad debe ser mayor que cero.");
+            return;
+        }
+
+        if (producto.getCantidadActual() > Integer.MAX_VALUE - cantidad) {
+            System.out.println("La cantidad ingresada supera el límite permitido.");
+            return;
+        }
+
+        int nuevaCantidad = producto.getCantidadActual() + cantidad;
+        producto.setCantidadActual(nuevaCantidad);
+
+        System.out.println("Entrada registrada correctamente.");
+        System.out.println("Producto: " + producto.getNombre());
+        System.out.println("Unidades recibidas: " + cantidad);
+        System.out.println("Cantidad actualizada: " + nuevaCantidad);
+    }
 
     // HU-10: listar facturas, buscar por fecha y exportar comprobantes.
     public void consultarFacturas(RegistroVentas registro, Scanner read) {
@@ -212,12 +263,107 @@ public class Empleado extends Usuario {
         }
     }
 
-    public void registrarEntrada(){
+    public void editarProducto(Map<String, Producto> inventario,
+                               Map<Integer, Categoria> categorias,
+                               Scanner read) {
 
-    }
+        System.out.println("\n***** EDITAR PRODUCTO *****");
 
-    public void editarProducto(){
+        if (inventario.isEmpty()) {
+            System.out.println("No hay productos registrados.");
+            return;
+        }
 
+        System.out.print("Ingrese el código del producto: ");
+        String codigo = read.nextLine().trim();
+
+        Producto producto = inventario.get(codigo);
+
+        if (producto == null) {
+            System.out.println("No existe un producto con ese código.");
+            return;
+        }
+
+        System.out.println("Producto seleccionado: " + producto.getNombre());
+        System.out.println("Ingrese todos los datos que tendrá el producto.");
+
+        // Primero recogemos los datos sin modificar todavía el producto.
+        System.out.print("Nuevo nombre: ");
+        String nombre = read.nextLine().trim();
+
+        if (nombre.isEmpty()) {
+            System.out.println("El nombre no puede quedar vacío.");
+            return;
+        }
+
+        try {
+            System.out.print("Nuevo precio de venta (use punto para decimales): ");
+            double precioVenta = Double.parseDouble(read.nextLine().trim());
+
+            if (!Double.isFinite(precioVenta) || precioVenta <= 0) {
+                System.out.println("El precio debe ser un número mayor que cero.");
+                return;
+            }
+
+            System.out.println("Categorías disponibles:");
+
+            for (Categoria categoria : categorias.values()) {
+                System.out.println(
+                        categoria.getIdCategoria() + ". " + categoria.getNombre()
+                );
+            }
+
+            System.out.print("Ingrese el ID de la nueva categoría: ");
+            int idCategoria = Integer.parseInt(read.nextLine().trim());
+
+            Categoria categoria = categorias.get(idCategoria);
+
+            if (categoria == null) {
+                System.out.println("La categoría seleccionada no existe.");
+                return;
+            }
+
+            System.out.print("Nueva fecha de vencimiento (AAAA-MM-DD): ");
+            LocalDate fechaVencimiento =
+                    LocalDate.parse(read.nextLine().trim());
+
+            System.out.print("Nueva cantidad actual: ");
+            int cantidadActual = Integer.parseInt(read.nextLine().trim());
+
+            System.out.print("Nueva cantidad mínima: ");
+            int cantidadMinima = Integer.parseInt(read.nextLine().trim());
+
+            if (cantidadActual < 0 || cantidadMinima < 0) {
+                System.out.println("Las cantidades no pueden ser negativas.");
+                return;
+            }
+
+            // Guardamos únicamente después de validar todos los datos.
+            producto.setNombre(nombre);
+            producto.setPrecioVenta(precioVenta);
+            producto.setCategoria(categoria);
+            producto.setFechaVencimiento(fechaVencimiento);
+            producto.setCantidadActual(cantidadActual);
+            producto.setCantidadMinima(cantidadMinima);
+
+            System.out.println("Producto actualizado correctamente.");
+            System.out.println("Código: " + producto.getCodigo());
+            System.out.println("Nombre: " + producto.getNombre());
+            System.out.println("Precio de venta: " + producto.getPrecioVenta());
+            System.out.println("Categoría: " + producto.getCategoria().getNombre());
+            System.out.println("Vencimiento: " + producto.getFechaVencimiento());
+            System.out.println("Cantidad actual: " + producto.getCantidadActual());
+            System.out.println("Cantidad mínima: " + producto.getCantidadMinima());
+
+        } catch (NumberFormatException e) {
+            System.out.println(
+                    "Número inválido o vacío. No se guardaron los cambios."
+            );
+        } catch (java.time.format.DateTimeParseException e) {
+            System.out.println(
+                    "Fecha inválida. Use AAAA-MM-DD. No se guardaron los cambios."
+            );
+        }
     }
 
     public void registrarProducto(Map<String, Producto> inventario, Map<Integer, Categoria> categorias){
@@ -225,8 +371,8 @@ public class Empleado extends Usuario {
 
         System.out.println("REGISTRAR PRODUCTO");
 
-        int desicion=0;
-        while (desicion != 2){
+        String desicion = "";
+        while (!desicion.equals("2")){
             System.out.print("Ingrese el código del producto: ");
             String codigo = read.nextLine();
 
@@ -257,6 +403,11 @@ public class Empleado extends Usuario {
 
             //Asignacion de categoría
             System.out.print("Ingrese el ID de la categoría del producto:");
+            for (Categoria categoria : categorias.values()) {
+                System.out.println(
+                        categoria.getIdCategoria() + ". " + categoria.getNombre()
+                );
+            }
             int idCategoria = read.nextInt();
 
             //Creo una variable "catObjetnida" de tipo de dato "Categoria" y con el "=" extraigo un valor
@@ -287,10 +438,10 @@ public class Empleado extends Usuario {
             System.out.println();
             System.out.println("Quieres Ingresar un nuevo producto?");
             System.out.println("Ingresa 1 = Si. 2 = NO");
-            desicion = read.nextInt();
             read.nextLine();
-            if (desicion !=1 && desicion !=2){
-                desicion = 2;
+            desicion = read.nextLine();
+            if (!desicion.equals("1") && !desicion.equals("2")){
+                desicion = "2";
                 System.out.println("Salió Correctamente del Menú de Registro");
             }
         }
@@ -307,9 +458,9 @@ public class Empleado extends Usuario {
             System.out.println("***********");
             System.out.println("1. Nombre.");
             System.out.println("2. Categoria.");
-            System.out.println("3. Codigo:");
-            System.out.println("4. Listar todo el inventario");
-            System.out.println("5. Salir");
+            System.out.println("3. Codigo.");
+            System.out.println("4. Listar todo el inventario.");
+            System.out.println("5. Salir.");
             System.out.println("***********");
             System.out.println("Ingrese la opcion por la cual desea buscar en el inventario");
             option=sc.nextInt();

@@ -1,14 +1,17 @@
 package Persona;
 
 public class Usuario {
-    private int id;
+    //Contador compartido por todos los usuarios: cada nuevo usuario recibe el siguiente id
+    private static int contadorId = 1;
+
+    private final int id;
     private String nombre;
     private String usuario;
     private String contrasena;
 
     //Constructor
-    public Usuario(int id, String nombre, String usuario, String contrasena){
-        this.id = id;
+    public Usuario(String nombre, String usuario, String contrasena){
+        this.id = contadorId++;
         this.nombre = nombre;
         this.usuario = usuario;
         this.contrasena = contrasena;
@@ -25,10 +28,6 @@ public class Usuario {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getUsuario() {
