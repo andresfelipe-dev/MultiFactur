@@ -92,7 +92,7 @@ public class Propietario extends Empleado {
         System.out.println("Nombre completo: ");
         String nombre = read.nextLine().trim();
         System.out.println("Usuario: ");
-        String nombreUsuario = read.nextLine().trim();
+        String nombreUsuario = read.nextLine().trim().toLowerCase();
         System.out.println("Contraseña: ");
         String contrasena = read.nextLine();
 
