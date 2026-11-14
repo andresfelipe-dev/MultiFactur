@@ -2,6 +2,8 @@ package Persona;
 
 import Inventario.Categoria;
 import Inventario.Producto;
+import com.sun.security.jgss.GSSUtil;
+
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Map;
@@ -163,7 +165,8 @@ public class Empleado extends Usuario {
 
         Scanner sc= new Scanner(System.in);
         int option=0;
-        verAlertas(inventario, categorias);
+        alertaVencimiento(inventario);
+        verAlertas(inventario);
         do {
             System.out.println("***********");
             System.out.println("INVENTARIO");
@@ -218,6 +221,12 @@ public class Empleado extends Usuario {
                         System.out.println("Nombre: " +product.getNombre());
                         System.out.println("Cantidad disponible: " + product.getCantidadActual());
                         System.out.println("");
+                        //HU-09
+                        if ((product.getCantidadActual() > 0)
+                                && (product.getCantidadActual() < product.getCantidadMinima())){
+                            System.out.println("<< ÚLTIMAS UNIDADES >>");
+                        }
+                        System.out.println("");
                     }
                     break;
                 case 5:
@@ -253,11 +262,8 @@ public class Empleado extends Usuario {
         }
     }
 
-    public void definirCantidadMinima(){
 
-    }
-
-    public void verAlertas(Map<String, Producto> inventario, Map<Integer, Categoria> categorias){
+    public void verAlertas(Map<String, Producto> inventario){
         for (Producto producto: inventario.values()){
             if (producto.getCantidadActual()<= producto.getCantidadMinima()){
                 System.out.println("");
@@ -267,8 +273,29 @@ public class Empleado extends Usuario {
             }
         }
     }
+    //HU-11
+    public void alertaVencimiento(Map<String, Producto> inventario){
+        LocalDate hoy = LocalDate.now();
+        boolean hayAlertas=false;
+        for (Producto p : inventario.values()) {
+            long diasRestantes = ChronoUnit.DAYS.between(hoy, p.getFechaVencimiento());
+            if (diasRestantes >= 0 && diasRestantes <= 14) {
+                hayAlertas = true;
+                System.out.println("**********************");
+                System.out.println("⚠ ALERTA DE VENCIMIENTO: '" + p.getNombre()
+                        + "' vence en " + diasRestantes + " día(s).");
+                System.out.println("************************");
+            }
+        }
+        if (!hayAlertas) {
+            System.out.println("*********************************");
+            System.out.println("Sin productos próximos a vencer.");
+            System.out.println("*********************************");
+        }
+    }
+}
 
     public void verHistorialVentas(){
 
     }
-}
+
