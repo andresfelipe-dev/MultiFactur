@@ -581,7 +581,7 @@ public class Empleado extends Usuario {
             System.out.println("*********************************");
         }
     }
-}
+
 
     // HU-11: consultar las ventas históricas de un producto.
     public void verHistorialVentas(RegistroVentas registro, Scanner read) {
