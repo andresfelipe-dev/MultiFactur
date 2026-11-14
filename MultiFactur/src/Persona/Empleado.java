@@ -194,6 +194,7 @@ public class Empleado extends Usuario {
         System.out.println("1. Listar todas las facturas");
         System.out.println("2. Buscar por fecha");
         System.out.println("3. Ver y exportar una factura por número de venta");
+        System.out.println("4. Volver al menú");
         System.out.print("Seleccione una opción: ");
 
         String opcion = read.nextLine().trim();
@@ -242,6 +243,8 @@ public class Empleado extends Usuario {
                 System.out.println("No se pudo exportar: " + e.getMessage());
             }
 
+        } else if (opcion.equals("4")){
+            System.out.println("Volviendo al menú principal...");
         } else {
             System.out.println("Opción inválida.");
         }
@@ -378,7 +381,7 @@ public class Empleado extends Usuario {
             System.out.print("Ingrese el código del producto: ");
             String codigo = read.nextLine();
 
-            if (inventario.containsKey(codigo)){
+            if (inventario.containsKey(codigo) || codigo.isBlank()){
                 System.out.println("ERROR: Ya existe un producto registrado con este código." + codigo);
                 return;
             }
@@ -435,7 +438,7 @@ public class Empleado extends Usuario {
             System.out.println("Producto: " + nombre +
                     "\nCódigo: "+ codigo+
                     "\nCategoria: " + catObtenida.getNombre() +
-                    "\nAgregado Corectamente");
+                    "\nAgregado Correctamente");
 
             System.out.println();
             System.out.println("Quieres Ingresar un nuevo producto?");
@@ -449,10 +452,10 @@ public class Empleado extends Usuario {
         }
     }
 
-    public void consultarInventario(Map<String, Producto> inventario, Map<Integer, Categoria> categorias){
+    public void consultarInventario(Map<String, Producto> inventario, Map<Integer, Categoria> categorias) throws IllegalAccessException {
 
         Scanner sc= new Scanner(System.in);
-        int option=0;
+        String option= "";
         alertaVencimiento(inventario);
         verAlertas(inventario);
         do {
@@ -466,10 +469,10 @@ public class Empleado extends Usuario {
             System.out.println("5. Salir.");
             System.out.println("***********");
             System.out.println("Ingrese la opcion por la cual desea buscar en el inventario");
-            option=sc.nextInt();
-            sc.nextLine();
+            option=sc.nextLine();
+
             switch (option){
-                case 1:
+                case "1":
                     System.out.println("Ingrese el nombre:");
                     String nombre=sc.nextLine();
                     for (Producto producto : inventario.values()){
@@ -480,7 +483,7 @@ public class Empleado extends Usuario {
                         }
                     }
                     break;
-                case 2:
+                case "2":
                     System.out.println("Ingrese la categoria:");
                     String categoria=sc.nextLine();
                     for (Producto producto: inventario.values()){
@@ -493,16 +496,20 @@ public class Empleado extends Usuario {
                         }
                     }
                     break;
-                case 3:
+                case "3":
                     System.out.println("Ingrese el codigo:");
                     String codigo=sc.nextLine();
                     Producto producto=inventario.get(codigo);
+                    if (producto == null){
+                        System.out.println("El código ingresado no existe dentro del inventario.");
+                        return;
+                    }
                     System.out.println("");
                     System.out.println("Nombre: " + producto.getNombre());
                     System.out.println("Cantidad disponible:" + producto.getCantidadActual());
                     System.out.println("");
                     break;
-                case 4:
+                case "4":
                     for (Producto product: inventario.values()){
                         System.out.println("");
                         System.out.println("Codigo: " +product.getCodigo());
@@ -517,39 +524,16 @@ public class Empleado extends Usuario {
                         System.out.println("");
                     }
                     break;
-                case 5:
+                case "5":
                     System.out.println("Saliendo...");
                     break;
                 default:
                     System.out.println("Saliendo...");
                     break;
             }
-        }while (option!=5);
+        }while (!option.equals("5"));
 
     }
-
-    public void consultarInventarioActivos(Map<String, Producto> inventario, Map<Integer, Categoria> categorias){
-        System.out.println("**** Inventario disponible ****");
-
-        boolean hayProductosActivos = false;
-
-        for (Producto producto : inventario.values()){
-            if (producto.isActivo()) {
-                hayProductosActivos = true;
-
-                System.out.println(
-                        "codigo: " + producto.getCodigo()
-                                + "Nombre: " + producto.getNombre()
-                                + "Cantidad: " + producto.getCantidadActual()
-                                + "Precio de venta: " + producto.getPrecioVenta()
-                );
-            }
-        }
-        if (!hayProductosActivos){
-            System.out.println("No hay productos activos en el inventario.");
-        }
-    }
-
 
     public void verAlertas(Map<String, Producto> inventario){
         for (Producto producto: inventario.values()){
