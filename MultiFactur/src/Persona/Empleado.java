@@ -2,9 +2,9 @@ package Persona;
 
 import Inventario.Categoria;
 import Inventario.Producto;
-import com.sun.security.jgss.GSSUtil;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
