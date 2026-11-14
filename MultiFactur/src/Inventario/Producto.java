@@ -40,7 +40,7 @@ public class Producto {
         return nombre;
     }
 
-    public void setNombre(String name) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 

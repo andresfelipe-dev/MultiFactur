@@ -1,0 +1,6 @@
+===== MULTIFACTUR - RECIBO C-0001 =====
+Fecha: 2026-11-07
+P001 | Leche Colanta 1L | Cantidad: 2 | Precio unitario: $3800.00 | Subtotal: $7600.00
+P002 | Limpido 1.8L | Cantidad: 4 | Precio unitario: $12500.00 | Subtotal: $50000.00
+TOTAL: $57600.00
+================================================
